@@ -1,9 +1,12 @@
 package com.teamtreehouse.techdegree.overboard.model;
 
+import com.teamtreehouse.techdegree.overboard.exc.VotingException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 // Test Fixture for the User model
 public class UserTest {
@@ -16,10 +19,13 @@ public class UserTest {
     private Answer answer;
 
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Before
     public void setUp() throws Exception {
         Board board = new Board("Taekwondo");
-        questioner = board.createUser( "Questioner");
+        questioner = board.createUser("Questioner");
         answerer = board.createUser("Answerer");
         voter = board.createUser("Voter");
 
@@ -59,8 +65,48 @@ public class UserTest {
 
         // Assert
         assertEquals(15, answerer.getReputation());
-    
     }
 
+    // Test that Authors are prevented from self-voting
 
+    // Verify that users cannot upVote their own question
+    @Test
+    public void userUpVotesTheirOwnQuestion() throws Exception {
+
+        thrown.expect(VotingException.class);
+        thrown.expectMessage("You cannot vote for yourself!");
+
+        questioner.upVote(question);
+    }
+    
+    // Verify that user cannot downVote their own question
+    @Test
+    public void userDownVotesTheirOwnQuestion() throws Exception {
+
+        thrown.expect(VotingException.class);
+        thrown.expectMessage("You cannot vote for yourself!");
+
+        questioner.downVote(question);
+    }
+
+    // Verify that user cannot upVote their own answer
+    @Test
+    public void userUpVotesTheirOwnAnswer() throws Exception {
+        thrown.expect(VotingException.class);
+        thrown.expectMessage("You cannot vote for yourself!");
+
+        answerer.upVote(answer);
+
+    }
+
+    // Verify that user cannot downVote their own answer
+
+    @Test
+    public void userDownVotesTheirOwnAnswer() throws Exception {
+        thrown.expect(VotingException.class);
+        thrown.expectMessage("You cannot vote for yourself!");
+
+        answerer.downVote(answer);
+
+    }
 }
