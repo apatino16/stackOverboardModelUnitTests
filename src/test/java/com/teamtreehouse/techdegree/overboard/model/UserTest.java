@@ -78,7 +78,7 @@ public class UserTest {
 
         questioner.upVote(question);
     }
-    
+
     // Verify that user cannot downVote their own question
     @Test
     public void userDownVotesTheirOwnQuestion() throws Exception {
