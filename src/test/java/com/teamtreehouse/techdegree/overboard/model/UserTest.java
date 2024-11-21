@@ -1,5 +1,6 @@
 package com.teamtreehouse.techdegree.overboard.model;
 
+import com.teamtreehouse.techdegree.overboard.exc.AnswerAcceptanceException;
 import com.teamtreehouse.techdegree.overboard.exc.VotingException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 // Test Fixture for the User model
 public class UserTest {
@@ -109,4 +111,27 @@ public class UserTest {
         answerer.downVote(answer);
 
     }
+
+    // Only the original questioner can accept an answer
+
+    // Non-author user cannot accept an answer to a question
+    @Test
+    public void nonAuthorAcceptsAnswerToQuestion() throws Exception {
+        // Act and Assert
+        thrown.expect(AnswerAcceptanceException.class);
+        thrown.expectMessage("Only Questioner can accept this answer as it is their question");
+
+        answerer.acceptAnswer(answer);
+    }
+
+    // Original questioner is able to accept an answer
+    @Test
+    public void originalQuestionerAcceptsAnswer() throws Exception {
+        // Act
+        questioner.acceptAnswer(answer);
+
+        // Assert
+        assertTrue(answer.isAccepted());
+    }
+
 }
